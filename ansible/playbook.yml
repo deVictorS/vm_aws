@@ -1,0 +1,67 @@
+---
+- name: Instalar Docker e rodar um Container
+  hosts: all
+  become: yes
+  tasks:
+    - name: Atualizar cache do apt
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Instalar dependências do sistema
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+          - python3-pip
+          - gnupg
+        state: present
+
+    - name: Criar diretório para chaves
+      file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: '0755'
+
+    - name: Baixar chave GPG do Docker (via Curl)
+      shell: curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+      args:
+        creates: /etc/apt/keyrings/docker.asc
+
+    - name: Adicionar repositório Docker
+      apt_repository:
+        repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+        state: present
+        filename: docker
+
+    - name: Atualizar apt novamente
+      apt:
+        update_cache: yes
+
+    - name: Instalar Docker Engine e Biblioteca Python
+      apt:
+        name: 
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-buildx-plugin
+          - docker-compose-plugin
+          - python3-docker 
+        state: present.
+
+    - name: Garantir que o Docker está rodando
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Rodar um container Nginx
+      docker_container:
+        name: meu_servidor_web
+        image: nginx:latest
+        state: started
+        restart_policy: always
+        published_ports:
+          - "80:80"

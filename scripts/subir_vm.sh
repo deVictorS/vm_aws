@@ -42,14 +42,14 @@ done
 
 echo "Conectado com sucesso!"
 
-# Comando de conexão final - Adicionei o IdentitiesOnly para evitar erros de agente
+#comando de conexão final
 ssh -i ../keys/aws_estudo \
     -o StrictHostKeyChecking=no \
     -o UserKnownHostsFile=/dev/null \
     -o IdentitiesOnly=yes \
     ubuntu@$IP_VM
 
-# O script pausa aqui até você sair da VM (comando exit)
+#script pausa aqui até sair da VM (exit)
 echo ""
 read -p "Deseja desligar a VM agora? (s/n): " -n 1 RESPOSTA
 echo ""

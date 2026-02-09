@@ -32,7 +32,14 @@ resource "aws_security_group" "acesso_ssh" {
     to_port = 22
     protocol = "tcp"
     cidr_blocks = ["200.131.56.36/32"] #meu ip real
-  } 
+  }
+
+  ingress {
+    from_port = 80
+    to_port = 80
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
   egress  {
     from_port = 0
