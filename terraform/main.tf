@@ -31,7 +31,7 @@ resource "aws_security_group" "acesso_ssh" {
     from_port = 22
     to_port = 22
     protocol = "tcp"
-    cidr_blocks = ["200.131.56.36/32"] #meu ip real
+    cidr_blocks = [""] #meu ip real
   }
 
   ingress {
@@ -40,6 +40,14 @@ resource "aws_security_group" "acesso_ssh" {
     protocol = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
+  ingress {
+    from_port = 19999
+    to_port = 19999
+    protocol = "tcp"
+    cidr_blocks = [""]
+  }
+
 
   egress  {
     from_port = 0
@@ -50,8 +58,8 @@ resource "aws_security_group" "acesso_ssh" {
 }
 
 resource "aws_instance" "maquina_web" {
-    ami = "ami-0b6c6ebed2801a5cb" #ubuntu lts (verificar id da regiao)
-    instance_type = "t3.micro" #grátis
+    ami = "ami-0b6c6ebed2801a5cb" 
+    instance_type = "t3.micro" 
     key_name = aws_key_pair.chave_vm.key_name
 
     vpc_security_group_ids = [aws_security_group.acesso_ssh.id]
